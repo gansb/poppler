@@ -672,6 +672,39 @@ poppler_document_get_attachments (PopplerDocument *document)
 }
 
 /**
+ * poppler_document_get_scripts:
+ * @document: A #PopplerDocument
+ *
+ **/
+GList *
+poppler_document_get_scripts (PopplerDocument *document)
+{
+  Catalog *catalog;
+  int n_scripts, i;
+  GList *retval = NULL;
+
+  g_return_val_if_fail (POPPLER_IS_DOCUMENT (document), NULL);
+
+  catalog = document->doc->getCatalog ();
+  if (catalog == NULL || ! catalog->isOk ())
+    return NULL;
+
+  n_scripts = catalog->numJS ();
+  for (i = 0; i < n_scripts; i++)
+    {
+      GString *name;
+      GooString *script_name;
+      
+      script_name = catalog->getJS (i);
+      name = g_string_new (script_name->getCString ());
+      delete script_name;
+
+      retval = g_list_prepend (retval, name);
+    }
+  return g_list_reverse (retval);
+}
+
+/**
  * poppler_document_find_dest:
  * @document: A #PopplerDocument
  * @link_name: a named destination

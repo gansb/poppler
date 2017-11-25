@@ -237,6 +237,10 @@ guint              poppler_document_get_n_attachments      (PopplerDocument  *do
 gboolean           poppler_document_has_attachments        (PopplerDocument  *document);
 GList             *poppler_document_get_attachments        (PopplerDocument  *document);
 
+/* JavaScript */
+GList             *poppler_document_get_scripts
+(PopplerDocument  *document);
+
 /* Links */
 PopplerDest       *poppler_document_find_dest              (PopplerDocument  *document,
 							    const gchar      *link_name);
