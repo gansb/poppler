@@ -58,6 +58,14 @@ typedef enum
   POPPLER_FORM_CHOICE_LIST
 } PopplerFormChoiceType;
 
+typedef enum
+{
+    POPPLER_FORM_FIELD_MODIFY,
+    POPPLER_FORM_FIELD_FORMAT,
+    POPPLER_FORM_FIELD_VALIDATE,
+    POPPLER_FORM_FIELD_CALCULATE
+} PopplerFormFieldAdditionalAction;
+
 GType                 poppler_form_field_get_type                (void) G_GNUC_CONST;
 
 PopplerFormFieldType  poppler_form_field_get_field_type          (PopplerFormField *field);
@@ -68,6 +76,8 @@ gchar                *poppler_form_field_get_partial_name        (PopplerFormFie
 gchar                *poppler_form_field_get_mapping_name        (PopplerFormField *field);
 gchar                *poppler_form_field_get_name                (PopplerFormField *field);
 PopplerAction        *poppler_form_field_get_action              (PopplerFormField *field);
+PopplerAction        *poppler_form_field_get_additional_action   (PopplerFormField *field,
+                      PopplerFormFieldAdditionalAction action_type);
 
 /* Button Field */
 PopplerFormButtonType poppler_form_field_button_get_button_type  (PopplerFormField *field);

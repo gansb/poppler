@@ -38,6 +38,7 @@ G_DEFINE_TYPE (PopplerFormField, poppler_form_field, G_TYPE_OBJECT)
 static void
 poppler_form_field_finalize (GObject *object)
 {
+  int i;
   PopplerFormField *field = POPPLER_FORM_FIELD (object);
 
   if (field->document)
@@ -50,6 +51,10 @@ poppler_form_field_finalize (GObject *object)
       poppler_action_free (field->action);
       field->action = NULL;
     }
+  for (i = 0; i < 4; ++i) {
+    poppler_action_free(field->additionalActions[i]);
+    field->additionalActions[i] = NULL;
+  }
   field->widget = NULL;
 
   G_OBJECT_CLASS (poppler_form_field_parent_class)->finalize (object);
@@ -191,6 +196,45 @@ poppler_form_field_get_action (PopplerFormField *field)
   field->action = _poppler_action_new (field->document, action, NULL);
 
   return field->action;
+}
+
+PopplerAction *
+poppler_form_field_get_additional_action (PopplerFormField *field,
+    PopplerFormFieldAdditionalAction action_type)
+{
+  LinkAction *action;
+  Annot::FormAdditionalActionsType type;
+
+  if (field->additionalActions[action_type]) {
+    return field->additionalActions[action_type];
+  }
+
+  switch (action_type) {
+    case POPPLER_FORM_FIELD_MODIFY:
+      type = Annot::actionFieldModified;
+      break;
+   case POPPLER_FORM_FIELD_FORMAT:
+      type = Annot::actionFormatField;
+      break;
+   case POPPLER_FORM_FIELD_VALIDATE:
+      type = Annot::actionValidateField;
+      break;
+   case POPPLER_FORM_FIELD_CALCULATE:
+      type = Annot::actionCalculateField;
+      break;
+   default:
+      g_warning ("Unsupported field type %d", action_type);
+      return NULL;
+  }
+
+  action = field->widget->getAdditionalAction (type);
+
+  if (!action)
+    return NULL;
+
+  field->additionalActions[action_type] = _poppler_action_new (field->document, action, NULL);
+
+  return field->additionalActions[action_type];
 }
 
 /* Button Field */

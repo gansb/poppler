@@ -71,6 +71,7 @@ struct _PopplerFormField
   PopplerDocument *document;
   FormWidget *widget;
   PopplerAction *action;
+  PopplerAction *additionalActions[4];
 };
 
 struct _PopplerAnnot
